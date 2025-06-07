@@ -99,8 +99,16 @@ if (process.env.NODE_ENV === 'production') {
   // Set static folder
   app.use(express.static(path.join(__dirname, '../../client/build')));
 
-  app.get('*', (req: Request, res: Response) => {
-    console.log(`Catch-all route hit: ${req.originalUrl}`);
+  // Replace the problematic catch-all route with a more explicit one
+  // that doesn't trigger path-to-regexp issues
+  app.use((req: Request, res: Response, next) => {
+    console.log(`Serving index.html for path: ${req.originalUrl}`);
+    
+    // Skip API routes and resume routes
+    if (req.path.startsWith('/api') || req.path === '/resume.pdf' || req.path === '/download-resume') {
+      return next();
+    }
+    
     res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
   });
   
