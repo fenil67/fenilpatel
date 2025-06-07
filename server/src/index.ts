@@ -45,15 +45,22 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Route to download resume
 app.get('/resume.pdf', (req: Request, res: Response) => {
-  const resumePath = path.resolve(__dirname, '../src/public/assets/Resume_Fenil_Patel.pdf');
+  // Fix path for production environment
+  const resumePath = path.resolve(__dirname, '../public/assets/Resume_Fenil_Patel.pdf');
   console.log('Resume path:', resumePath);
   console.log('File exists:', require('fs').existsSync(resumePath));
-  res.sendFile(resumePath);
+  res.sendFile(resumePath, (err) => {
+    if (err) {
+      console.error('Error sending resume file:', err);
+      res.status(404).send('Resume file not found');
+    }
+  });
 });
 
 // Direct resume download for testing
 app.get('/download-resume', (req: Request, res: Response) => {
-  const resumePath = path.resolve(__dirname, '../src/public/assets/Resume_Fenil_Patel.pdf');
+  // Fix path for production environment
+  const resumePath = path.resolve(__dirname, '../public/assets/Resume_Fenil_Patel.pdf');
   res.download(resumePath, 'Resume_Fenil_Patel.pdf', (err) => {
     if (err) {
       console.error('Download error:', err);
@@ -63,21 +70,41 @@ app.get('/download-resume', (req: Request, res: Response) => {
 });
 
 // Import routes
+console.log('Registering routes...');
+
+console.log('Registering projectRoutes');
 app.use('/api/projects', projectRoutes);
+
+console.log('Registering experienceRoutes');
 app.use('/api/experiences', experienceRoutes);
+
+console.log('Registering skillRoutes');
 app.use('/api/skills', skillRoutes);
+
+console.log('Registering qnaRoutes');
 app.use('/api/qna', qnaRoutes);
+
+console.log('Registering queryRoutes');
 app.use('/api/query', queryRoutes);
+
+console.log('Registering messageRoutes');
 app.use('/api/messages', messageRoutes);
+
+console.log('All routes registered successfully');
 
 // Production setup
 if (process.env.NODE_ENV === 'production') {
+  console.log('Setting up production mode');
+  
   // Set static folder
   app.use(express.static(path.join(__dirname, '../../client/build')));
 
   app.get('*', (req: Request, res: Response) => {
+    console.log(`Catch-all route hit: ${req.originalUrl}`);
     res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
   });
+  
+  console.log('Production setup complete');
 }
 
 // Start server
