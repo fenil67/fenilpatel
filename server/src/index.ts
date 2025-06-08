@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5002;
 
 // CORS configuration - MUST be before other middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // frontend URLs
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://pfenilj.onrender.com'], // frontend URLs
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
