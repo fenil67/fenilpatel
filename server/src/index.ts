@@ -93,27 +93,27 @@ app.use('/api/messages', messageRoutes);
 console.log('All routes registered successfully');
 
 // Production setup
-if (process.env.NODE_ENV === 'production') {
-  console.log('Setting up production mode');
+// if (process.env.NODE_ENV === 'production') {
+//   console.log('Setting up production mode');
   
-  // Set static folder
-  app.use(express.static(path.join(__dirname, '../../client/build')));
+//   // Set static folder
+//   app.use(express.static(path.join(__dirname, '../../client/build')));
 
-  // Replace the problematic catch-all route with a more explicit one
-  // that doesn't trigger path-to-regexp issues
-  app.use((req: Request, res: Response, next) => {
-    console.log(`Serving index.html for path: ${req.originalUrl}`);
+//   // Replace the problematic catch-all route with a more explicit one
+//   // that doesn't trigger path-to-regexp issues
+//   app.use((req: Request, res: Response, next) => {
+//     console.log(`Serving index.html for path: ${req.originalUrl}`);
     
-    // Skip API routes and resume routes
-    if (req.path.startsWith('/api') || req.path === '/resume.pdf' || req.path === '/download-resume') {
-      return next();
-    }
+//     // Skip API routes and resume routes
+//     if (req.path.startsWith('/api') || req.path === '/resume.pdf' || req.path === '/download-resume') {
+//       return next();
+//     }
     
-    res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
-  });
+//     res.sendFile(path.resolve(__dirname, '../../client/build', 'index.html'));
+//   });
   
-  console.log('Production setup complete');
-}
+//   console.log('Production setup complete');
+// }
 
 // Start server
 connectDB().then(() => {
